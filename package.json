@@ -1,0 +1,41 @@
+{
+  "name": "fes-calendar",
+  "description": "Queries the Friedrich-Ebert-Stiftung (FES) event calendar",
+  "version": "0.0.0",
+  "keywords": [
+  	"fes",
+  	"spd",
+  	"germany",
+  	"friedrich",
+  	"ebert",
+  	"stiftung"
+  ],
+  "author": "Julius Tens <mail@juliustens.de>",
+  "homepage": "https://github.com/juliuste/fes-calendar",
+  "repository": "juliuste/fes-calendar",
+  "bugs": "https://github.com/juliuste/fes-calendar/issues",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "got": "^6.7.1",
+    "he": "^1.1.1",
+    "iconv-lite": "^0.4.15",
+    "lodash.filter": "^4.6.0",
+    "moment-timezone": "^0.5.11",
+    "to-markdown": "^3.0.3"
+  },
+  "devDependencies": {
+    "tape": "^4.6.3"
+  },
+  "scripts": {
+    "test": "node test.js",
+    "prepublish": "npm test"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "MIT"
+}
