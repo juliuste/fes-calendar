@@ -1,5 +1,7 @@
 # fes-calendar
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/juliuste/fes-calendar.svg)](https://greenkeeper.io/)
+
 Queries the [Friedrich-Ebert-Stiftung (FES) event calendar](http://www.fes.de/de/veranstaltungen/) website for events.
 
 [![npm version](https://img.shields.io/npm/v/fes-calendar.svg)](https://www.npmjs.com/package/fes-calendar)
