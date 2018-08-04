@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "cheerio": "^0.22.0",
-    "got": "^8.0.0",
+    "got": "^9.0.0",
     "he": "^1.1.1",
     "iconv-lite": "^0.4.15",
     "lodash.filter": "^4.6.0",
