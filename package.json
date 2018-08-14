@@ -1,7 +1,7 @@
 {
   "name": "fes-calendar",
   "description": "Queries the Friedrich-Ebert-Stiftung (FES) event calendar",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "keywords": [
     "fes",
     "spd",
