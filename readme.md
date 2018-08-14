@@ -33,8 +33,8 @@ Returns a Returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaS
 	mail: 'paula.blub@fis.di',
 	'contact-person': 'Peter Testperson',
 	'contact-address': 'FIS NRW, Charles Place 22, 44444 Borsteln',
-	start: '2017-06-30T18:00:00.000Z',
-	end: '2017-06-31T09:00:00.000Z' // optional
+	start: '2017-06-30T18:00:00.000Z', // JS Date()
+	end: '2017-06-31T09:00:00.000Z' // JS Date(), optional
 	location: 'Blubdorf',
 	fee: 0, // in EUR
 	info: 'keine Plätze mehr',
