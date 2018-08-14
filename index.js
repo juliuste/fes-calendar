@@ -1,20 +1,20 @@
 'use strict'
 
-const request = require('got')
+const got = require('got')
 const moment = require('moment-timezone')
 const parser = require('cheerio')
 const markdown = require('to-markdown')
 const decodeHTML = require('he').decode
 const iconv = require('iconv-lite')
 const filter = require('lodash.filter')
+const merge = require('lodash.merge')
 
 const decodeISO = (iso) => iconv.decode(iso, 'ISO-8859-15')
 
-
 const mergeDateTime = (date, time) => {
 	if(!date) return null
-	if(time) return moment.tz(`${date} ${time}`, 'DD.MM.YYYY HH:mm', 'Europe/Berlin').toISOString()
-	return moment.tz(date, 'DD.MM.YYYY', 'Europe/Berlin').toISOString()
+	if(time) return moment.tz(`${date} ${time}`, 'DD.MM.YYYY HH:mm', 'Europe/Berlin').toDate()
+	return moment.tz(date, 'DD.MM.YYYY', 'Europe/Berlin').toDate()
 }
 
 const mergeDateTimes = (event) => {
@@ -29,7 +29,11 @@ const mergeDateTimes = (event) => {
 		end: mergeDateTime(event.date.end, event.time.end)
 	}
 	delete event.time
-	event.date = date
+
+	event.start = date.start
+	if (!event.start) throw new Error()
+	if (date.end) event.end = date.end
+
 	return event
 }
 
@@ -85,28 +89,32 @@ const parseRow = ($) => {
 }
 
 const parseEvent = ($) => {
+	const rows = Array.from($('tr'))
 	let event = {}
-	for(let row of Array.from($.children())) event = Object.assign(event, parseRow(parser(row)))
+	for(let row of rows) {
+		event = merge(event, parseRow(parser(row)))
+	}
 	return mergeAttachments(mergeDateTimes(event))
 }
 
-const splitEvents = ($) => Array.from($('table')).map(parser)
+const splitEvents = ($) => Array.from($('#pageContent table')).map(e => parser.load(e))
 
-const fetch = (start, end) => {
-	return request.post('http://www.fes.de/t3php/vera_nform.php', {
-		query: {
-			p_ive_datum1: moment(start).format('DD.MM.YYYY'),
-			p_ive_datum2: moment(end).format('DD.MM.YYYY')
-		},
+const calendar = async (start, end) => {
+	const results = await (got.post('https://www.fes.de/t3php/vera_nform.php', {
+		form: true,
+		body: ({
+			p_ive_datum1: moment.tz(start, 'Europe/Berlin').format('DD.MM.YYYY'),
+			p_ive_datum2: moment.tz(end, 'Europe/Berlin').format('DD.MM.YYYY')
+		}),
 		encoding: null
-	})
-	.then((result) => result.body)
-	.then(decodeISO)
-	.then(parser.load)
-	.then(splitEvents)
-	.then((events) => events.map(parseEvent))
-	.then((events) => filter(events, (o) => o && o.id)
-		.map((s) => {s.organization = ({name: 'Friedrich-Ebert-Stiftung', id: 'fes'}); return s}))
+	}).then(res => res.body))
+
+	const decoded = decodeISO(results)
+	const parsed = parser.load(decoded)
+	const events = splitEvents(parsed).map(parseEvent).filter(e => e && e.id)
+
+	events.forEach(e => {e.organization = ({name: 'Friedrich-Ebert-Stiftung', id: 'fes'})})
+	return events
 }
 
-module.exports = fetch
+module.exports = calendar

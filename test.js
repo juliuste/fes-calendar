@@ -1,17 +1,34 @@
 'use strict'
 
 const tape = require('tape')
+const moment = require('moment-timezone')
+const isDate = require('lodash.isdate')
 const calendar = require('./index')
 
-tape('fes-calendar', (t) => {
-	calendar(new Date(), (+new Date)+10000000)
-	.then((events) => {
-		t.plan(6)
-		t.false(events.length==0, 'results count')
-		t.true(events[0].id, 'result id')
-		t.true(events[0].title, 'result title')
-		t.true(+new Date(events[0].date.start) > 0, 'result start')
-		t.true(events[0].organization.id==='fes', 'result organization id')
-		t.true(events[0].organization.name==='Friedrich-Ebert-Stiftung', 'result organization name')
-	})
+tape('fes-calendar', async t => {
+	const start = moment.tz('Europe/Berlin').add(4, 'days').startOf('day').add(10, 'hours').toDate()
+	const end = moment.tz('Europe/Berlin').add(6, 'days').startOf('day').add(10, 'hours').toDate()
+
+	const events = await calendar(start, end)
+
+	t.ok(Array.isArray(events) && events.length > 0, 'results count')
+	t.ok(!!events.find(e => e.end), 'at least one event with end')
+
+	for (let event of events) {
+		t.ok(typeof event.id === 'string' && event.id.length > 0, 'result id')
+		t.ok(typeof event.title === 'string' && event.title.length > 0, 'result title')
+
+		t.ok(event.start && isDate(event.start), 'start')
+		t.ok(+new Date('2000-01-01') < +event.start, 'event started in this century')
+
+		if (event.end) {
+			t.ok(isDate(event.end), 'end')
+			t.ok(+event.start <= +event.end, 'start <= end')
+		}
+
+		t.ok(event.organization.id==='fes', 'result organization id')
+		t.ok(event.organization.name==='Friedrich-Ebert-Stiftung', 'result organization name')
+	}
+
+	t.end()
 })
