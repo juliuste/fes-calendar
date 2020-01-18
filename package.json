@@ -22,7 +22,7 @@
     "cheerio": "^1.0.0-rc.2",
     "got": "^9.0.0",
     "he": "^1.1.1",
-    "iconv-lite": "^0.4.15",
+    "iconv-lite": "^0.5.1",
     "lodash.filter": "^4.6.0",
     "lodash.merge": "^4.6.1",
     "moment-timezone": "^0.5.11",
