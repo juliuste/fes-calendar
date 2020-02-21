@@ -25,7 +25,7 @@
     "iconv-lite": "^0.4.15",
     "lodash.filter": "^4.6.0",
     "lodash.merge": "^4.6.1",
-    "moment-timezone": "^0.5.11",
+    "moment-timezone": "^0.5.28",
     "to-markdown": "^3.0.3"
   },
   "devDependencies": {
